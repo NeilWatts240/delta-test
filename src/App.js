@@ -1,24 +1,39 @@
-import logo from './logo.svg';
-import './App.css';
+import React from "react";
+import axios from "axios";
+import "./App.css";
+import Header from "./components/Header";
+import Content from "./components/Content";
+import Modal from "./components/Modal";
 
 function App() {
+  const [modalOpened, setModalOpened] = React.useState(false);
+  const [modalLink, setModalLink] = React.useState("");
+  const [items, setItems] = React.useState([]);
+
+  React.useEffect(() => {
+    try {
+      axios.get("items.json").then((res) => {
+        setItems(res.data);
+      });
+    } catch (error) {
+      console.log("Ошибка при запросе данных");
+    }
+  }, []);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+      <div className="container">
+        <Header />
+        <Content
+          items={items}
+          setModalOpened={setModalOpened}
+          setModalLink={setModalLink}
+        />
+      </div>
+      {modalOpened && (
+        <Modal modalLink={modalLink} setModalOpened={setModalOpened} />
+      )}
+    </>
   );
 }
 
